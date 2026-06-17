@@ -17,6 +17,7 @@ import {
   X,
 } from "lucide-react";
 import { TELEGRAM_URL } from "./stations";
+import { EASE } from "../lib/motion";
 
 const INDUSTRIES = [
   "Savdo / Retail",
@@ -63,10 +64,10 @@ function Chip({ label, selected, onClick }) {
     <button
       type="button"
       onClick={onClick}
-      className={`min-h-11 rounded-xl border px-3.5 py-2 text-xs font-medium transition-all ${
+      className={`min-h-11 rounded-full border px-3.5 py-2 text-xs font-medium transition-all duration-300 ${
         selected
-          ? "border-teal-400/70 bg-teal-400/15 text-teal-300 shadow-[0_0_16px_-4px_rgba(45,212,191,0.5)]"
-          : "border-white/10 bg-white/5 text-slate-300 hover:border-white/30"
+          ? "border-emerald-400/60 bg-emerald-400/15 text-emerald-300"
+          : "border-white/[0.1] bg-white/[0.04] text-slate-300 hover:border-white/25"
       }`}
     >
       {label}
@@ -83,7 +84,7 @@ function Field({ icon: Icon, ...props }) {
       />
       <input
         {...props}
-        className="h-12 w-full rounded-xl border border-white/10 bg-white/5 pl-10 pr-4 text-sm text-slate-100 placeholder:text-slate-600 outline-none transition focus:border-teal-400/60 focus:bg-white/[0.07]"
+        className="h-12 w-full rounded-xl border border-white/[0.1] bg-white/[0.04] pl-10 pr-4 text-sm text-slate-100 placeholder:text-slate-600 outline-none transition focus:border-emerald-400/50 focus:bg-white/[0.06]"
       />
     </div>
   );
@@ -147,26 +148,26 @@ export default function CTAModal({ open, onClose }) {
           />
 
           <motion.div
-            initial={{ opacity: 0, scale: 0.92, y: 24 }}
+            initial={{ opacity: 0, scale: 0.96, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.95, y: 16 }}
-            transition={{ type: "spring", stiffness: 280, damping: 26 }}
-            className="relative my-6 w-full max-w-md overflow-hidden rounded-3xl border border-white/12 bg-[#0a1114] shadow-[0_0_80px_-20px_rgba(45,212,191,0.4)]"
+            exit={{ opacity: 0, scale: 0.97, y: 12 }}
+            transition={{ duration: 0.45, ease: EASE }}
+            className="relative my-6 w-full max-w-md overflow-hidden rounded-[1.5rem] border border-white/[0.1] bg-[#0a0f12] shadow-[0_40px_100px_-30px_rgba(0,0,0,0.9)]"
           >
-            <div className="h-1 w-full bg-gradient-to-r from-teal-400 via-sky-400 to-amber-400" />
+            <div className="h-px w-full bg-gradient-to-r from-transparent via-emerald-400 to-transparent" />
 
             <div className="p-6">
               {submitted ? (
                 <div className="flex flex-col items-center py-8 text-center">
                   <motion.span
-                    initial={{ scale: 0 }}
-                    animate={{ scale: 1 }}
-                    transition={{ type: "spring", stiffness: 260, damping: 16 }}
-                    className="flex h-16 w-16 items-center justify-center rounded-full bg-teal-400/15 text-teal-400"
+                    initial={{ scale: 0.4, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    transition={{ duration: 0.5, ease: EASE }}
+                    className="flex h-16 w-16 items-center justify-center rounded-full bg-emerald-400/12 text-emerald-400"
                   >
                     <CheckCircle2 size={34} />
                   </motion.span>
-                  <h3 className="mt-4 text-lg font-bold text-slate-50">
+                  <h3 className="mt-4 text-lg font-semibold text-slate-50">
                     Telegram ochildi!
                   </h3>
                   <p className="mt-2 max-w-xs text-sm leading-relaxed text-slate-400">
@@ -177,7 +178,7 @@ export default function CTAModal({ open, onClose }) {
                     href={tgLink}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="mt-6 flex h-11 items-center gap-2 rounded-xl bg-gradient-to-r from-teal-400 to-emerald-500 px-6 text-sm font-bold text-black transition hover:brightness-110"
+                    className="mt-6 flex h-11 items-center gap-2 rounded-full bg-emerald-400 px-6 text-[13px] font-semibold text-emerald-950 transition hover:bg-emerald-300"
                   >
                     <Send size={15} />
                     Telegram ochilmadimi? Bu yerni bosing
@@ -195,10 +196,10 @@ export default function CTAModal({ open, onClose }) {
                   {/* Sarlavha + qadam indikatori */}
                   <div className="flex items-start justify-between">
                     <div>
-                      <p className="font-mono text-[10px] font-bold tracking-[0.25em] text-teal-400">
-                        MUALLIF BILAN SUHBAT
+                      <p className="font-mono text-[10px] font-semibold tracking-[0.25em] text-emerald-400">
+                        BEPUL KONSULTATSIYA
                       </p>
-                      <h3 className="mt-1 text-lg font-bold text-slate-50">
+                      <h3 className="mt-1 text-lg font-semibold text-slate-50">
                         {STEP_TITLES[step]}
                       </h3>
                     </div>
@@ -219,10 +220,10 @@ export default function CTAModal({ open, onClose }) {
                         className="h-1 flex-1 overflow-hidden rounded-full bg-white/10"
                       >
                         <motion.div
-                          className="h-full rounded-full bg-gradient-to-r from-teal-400 to-sky-400"
+                          className="h-full rounded-full bg-emerald-400"
                           initial={false}
                           animate={{ width: i <= step ? "100%" : "0%" }}
-                          transition={{ duration: 0.35 }}
+                          transition={{ duration: 0.4, ease: EASE }}
                         />
                       </div>
                     ))}
@@ -232,10 +233,10 @@ export default function CTAModal({ open, onClose }) {
                     <AnimatePresence mode="wait">
                       <motion.div
                         key={step}
-                        initial={{ opacity: 0, x: 36 }}
+                        initial={{ opacity: 0, x: 28 }}
                         animate={{ opacity: 1, x: 0 }}
-                        exit={{ opacity: 0, x: -36 }}
-                        transition={{ duration: 0.22 }}
+                        exit={{ opacity: 0, x: -28 }}
+                        transition={{ duration: 0.3, ease: EASE }}
                         className="space-y-4"
                       >
                         {step === 0 && (
@@ -349,7 +350,7 @@ export default function CTAModal({ open, onClose }) {
                       <button
                         type="button"
                         onClick={() => setStep(step - 1)}
-                        className="flex h-12 items-center gap-1 rounded-xl border border-white/10 bg-white/5 px-4 text-xs font-medium text-slate-300 transition hover:border-white/25"
+                        className="flex h-12 items-center gap-1 rounded-full border border-white/[0.1] bg-white/[0.04] px-4 text-xs font-medium text-slate-300 transition hover:border-white/25"
                       >
                         <ChevronLeft size={15} />
                         Orqaga
@@ -359,7 +360,7 @@ export default function CTAModal({ open, onClose }) {
                       type="button"
                       onClick={next}
                       disabled={!stepValid}
-                      className="flex h-12 flex-1 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-teal-400 to-emerald-500 text-sm font-bold text-black transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-35"
+                      className="flex h-12 flex-1 items-center justify-center gap-2 rounded-full bg-emerald-400 text-sm font-semibold text-emerald-950 transition hover:bg-emerald-300 disabled:cursor-not-allowed disabled:bg-white/10 disabled:text-slate-500"
                     >
                       {step === 2 ? (
                         <>

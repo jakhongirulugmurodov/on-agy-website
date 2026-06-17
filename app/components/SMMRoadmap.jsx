@@ -1,38 +1,79 @@
 "use client";
 
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion, useScroll, useSpring } from "framer-motion";
 import { useCallback, useEffect, useState } from "react";
-import { Send } from "lucide-react";
+import { ArrowUpRight, ChevronDown } from "lucide-react";
 import { STATIONS, TELEGRAM_URL } from "./stations";
 import { useIsDesktop } from "./useIsDesktop";
+import { EASE, stagger } from "../lib/motion";
 import RoadmapCanvas from "./RoadmapCanvas";
 import StationDetail from "./StationDetail";
 import MiniMapDock from "./MiniMapDock";
 import CTAModal from "./CTAModal";
 import ClientsSection from "./ClientsSection";
 import PortfolioSection from "./PortfolioSection";
+import Reveal from "./Reveal";
 
 function Logo() {
   return (
     <div className="flex items-center gap-2.5">
-      <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-teal-700 to-teal-500 text-sm font-black tracking-tight text-white ring-1 ring-teal-400/30">
+      <span className="flex h-9 w-9 items-center justify-center rounded-lg border border-emerald-400/25 bg-emerald-400/10 text-[13px] font-semibold tracking-tight text-emerald-300">
         O&apos;N
       </span>
       <div className="leading-tight">
-        <p className="text-sm font-bold tracking-tight text-slate-50">O&apos;N</p>
-        <p className="font-mono text-[9px] tracking-[0.22em] text-teal-500">
-          O&apos;SISH NUQTASI
+        <p className="text-[13px] font-semibold tracking-tight text-slate-100">
+          O&apos;N agy.
+        </p>
+        <p className="font-mono text-[9px] tracking-[0.18em] text-slate-500">
+          O&apos;SISH NUQTASINI ANIQLAYMIZ
         </p>
       </div>
     </div>
   );
 }
 
+// Premium CTA — bitta toza emerald, neon kamalak emas
+function CTAButton({ onClick, children, size = "md", className = "" }) {
+  const pad = size === "lg" ? "h-13 px-7 text-sm" : "h-11 px-5 text-[13px]";
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`group inline-flex items-center justify-center gap-2 rounded-full bg-emerald-400 font-semibold text-emerald-950 transition-all duration-300 hover:bg-emerald-300 hover:shadow-[0_10px_30px_-12px_rgba(52,211,153,0.6)] active:scale-[0.98] ${pad} ${className}`}
+    >
+      {children}
+      <ArrowUpRight
+        size={size === "lg" ? 17 : 15}
+        className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+      />
+    </button>
+  );
+}
+
+// Sarlavha — so'zma-so'z ko'tarilib chiqadi
+const HEADLINE = [
+  { text: "Biznesingizning", accent: false },
+  { text: "o'sish nuqtasini", accent: true },
+  { text: "topamiz", accent: false },
+];
+
+const wordVariant = {
+  hidden: { opacity: 0, y: 22 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.75, ease: EASE } },
+};
+
 export default function SMMRoadmap() {
   const [activeId, setActiveId] = useState(null);
   const [visitedMax, setVisitedMax] = useState(0);
   const [modalOpen, setModalOpen] = useState(false);
   const { mounted, isDesktop } = useIsDesktop();
+
+  const { scrollYProgress } = useScroll();
+  const scaleX = useSpring(scrollYProgress, {
+    stiffness: 120,
+    damping: 30,
+    restDelta: 0.001,
+  });
 
   const selectStation = useCallback((id) => {
     if (id < 1 || id > STATIONS.length) return;
@@ -42,7 +83,6 @@ export default function SMMRoadmap() {
 
   const closeStation = useCallback(() => setActiveId(null), []);
 
-  // Overlay ochiq paytda fon aylanmasin
   useEffect(() => {
     document.body.style.overflow = activeId || modalOpen ? "hidden" : "";
     return () => {
@@ -54,49 +94,92 @@ export default function SMMRoadmap() {
 
   return (
     <div className="relative flex min-h-screen flex-col">
+      {/* Scroll progress — yuqorida ingichka emerald chiziq */}
+      <motion.div
+        className="fixed inset-x-0 top-0 z-50 h-px origin-left bg-emerald-400/70"
+        style={{ scaleX }}
+      />
+
       {/* Yuqori panel */}
-      <header className="fixed inset-x-0 top-0 z-40 border-b border-white/5 bg-[#05060a]/70 backdrop-blur-xl">
+      <header className="fixed inset-x-0 top-0 z-40 border-b border-white/[0.06] bg-[#060709]/80 backdrop-blur-xl">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4">
           <Logo />
-          <button
-            type="button"
-            onClick={() => setModalOpen(true)}
-            className="flex h-11 items-center gap-2 rounded-xl bg-gradient-to-r from-teal-400 to-emerald-500 px-4 text-xs font-bold text-black shadow-[0_0_28px_-8px_rgba(45,212,191,0.8)] transition hover:brightness-110 sm:px-5 sm:text-sm"
-          >
-            <Send size={15} />
-            <span className="hidden sm:inline">Muallif bilan suhbatlashish</span>
-            <span className="sm:hidden">Suhbatlashish</span>
-          </button>
+          <CTAButton onClick={() => setModalOpen(true)}>
+            <span className="hidden sm:inline">Bepul konsultatsiya</span>
+            <span className="sm:hidden">Konsultatsiya</span>
+          </CTAButton>
         </div>
       </header>
 
       <main className="flex-1 pt-16">
         {/* Kirish */}
-        <section className="mx-auto max-w-3xl px-4 pt-12 text-center sm:pt-16">
-          <motion.div
-            initial={{ opacity: 0, y: 18 }}
+        <section className="mx-auto max-w-3xl px-4 pt-16 text-center sm:pt-24">
+          <motion.span
+            initial={{ opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
+            transition={{ duration: 0.6, ease: EASE }}
+            className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-4 py-1.5 text-[11px] font-medium tracking-wide text-slate-400"
           >
-            <span className="inline-block rounded-full border border-teal-400/25 bg-teal-400/10 px-4 py-1.5 text-[11px] font-medium tracking-wide text-teal-300">
-              O&apos;N — O&apos;sish Nuqtasi
+            <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
+            O&apos;N agy. — o&apos;sish nuqtasini aniqlaydigan agentlik
+          </motion.span>
+
+          <motion.h1
+            variants={stagger(0.13, 0.2)}
+            initial="hidden"
+            animate="show"
+            className="mt-6 text-[2rem] font-semibold leading-[1.12] tracking-[-0.02em] text-slate-50 sm:text-[3.25rem]"
+          >
+            {HEADLINE.map((word) => (
+              <motion.span
+                key={word.text}
+                variants={wordVariant}
+                className={`mr-[0.25em] inline-block ${
+                  word.accent ? "text-emerald-400" : ""
+                }`}
+              >
+                {word.text}
+              </motion.span>
+            ))}
+          </motion.h1>
+
+          <motion.p
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, ease: EASE, delay: 0.7 }}
+            className="mx-auto mt-6 max-w-xl text-[15px] leading-relaxed text-slate-400"
+          >
+            Tasodifiy postlar emas — aniq jarayon. Quyidagi 3 bosqichli siklni
+            bosib o&apos;rganing: har birida vaqt, byudjet va natija
+            ko&apos;rsatkichlari ochiladi.
+          </motion.p>
+
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.6, delay: 1.1 }}
+            className="mt-10 flex flex-col items-center gap-1.5 text-slate-600"
+          >
+            <span className="font-mono text-[10px] tracking-[0.25em]">
+              BEKATNI BOSIB ICHINI KO&apos;RING
             </span>
-            <h1 className="mt-5 text-3xl font-bold leading-tight tracking-tight text-slate-50 sm:text-5xl">
-              Biznesingizning{" "}
-              <span className="bg-gradient-to-r from-teal-300 via-sky-300 to-amber-300 bg-clip-text text-transparent">
-                o&apos;sish nuqtasini
-              </span>{" "}
-              topamiz
-            </h1>
-            <p className="mt-7 animate-pulse font-mono text-[10px] tracking-[0.3em] text-slate-600">
-              ▼ HAR BIR BEKATNI BOSIB, ICHINI KO&apos;RING ▼
-            </p>
+            <motion.span
+              animate={{ y: [0, 6, 0] }}
+              transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
+            >
+              <ChevronDown size={16} />
+            </motion.span>
           </motion.div>
         </section>
 
-        {/* Xarita */}
-        <section className="mx-auto max-w-3xl px-3 pb-12 pt-6 sm:px-6">
-          <div className="relative overflow-hidden rounded-3xl border border-white/8 bg-[#060a0d]">
+        {/* Sikl diagrammasi */}
+        <section className="mx-auto max-w-3xl px-3 pb-12 pt-10 sm:px-6">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.9, ease: EASE, delay: 0.4 }}
+            className="relative overflow-hidden rounded-[1.75rem] border border-white/[0.07] bg-[#080b0d]"
+          >
             {mounted ? (
               <RoadmapCanvas
                 stations={STATIONS}
@@ -108,52 +191,60 @@ export default function SMMRoadmap() {
             ) : (
               <div className="flex aspect-square w-full items-center justify-center">
                 <span className="font-mono text-xs tracking-widest text-slate-600">
-                  XARITA YUKLANMOQDA…
+                  YUKLANMOQDA…
                 </span>
               </div>
             )}
-          </div>
+          </motion.div>
         </section>
 
         <ClientsSection />
         <PortfolioSection />
 
         {/* Yakuniy chaqiruv */}
-        <section className="mx-auto max-w-4xl px-4 pb-28 lg:pb-16">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.97 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true, margin: "-60px" }}
-            className="relative overflow-hidden rounded-3xl border border-teal-400/20 bg-gradient-to-br from-[#0a1416] to-[#0c1119] p-8 text-center sm:p-12"
-          >
-            <div className="absolute -right-16 -top-16 h-48 w-48 rounded-full bg-teal-400/10 blur-3xl" />
-            <div className="absolute -bottom-16 -left-16 h-48 w-48 rounded-full bg-amber-400/10 blur-3xl" />
-            <h2 className="relative text-2xl font-bold text-slate-50 sm:text-3xl">
-              Qayerda o&apos;sish imkoni borligini bilmoqchimisiz?
-            </h2>
-            <button
-              type="button"
-              onClick={() => setModalOpen(true)}
-              className="relative mt-7 inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-teal-400 to-emerald-500 px-8 py-4 text-sm font-bold text-black shadow-[0_0_40px_-8px_rgba(45,212,191,0.8)] transition hover:scale-[1.03] hover:brightness-110"
+        <section className="mx-auto max-w-4xl px-4 pb-28 lg:pb-20">
+          <Reveal className="relative overflow-hidden rounded-[1.75rem] border border-white/[0.07] bg-[#0a0d10] px-6 py-14 text-center sm:px-12">
+            <div className="pointer-events-none absolute left-1/2 top-0 h-px w-2/3 -translate-x-1/2 bg-gradient-to-r from-transparent via-emerald-400/40 to-transparent" />
+            <Reveal
+              delay={0.1}
+              as="p"
+              className="font-mono text-[11px] tracking-[0.25em] text-emerald-400/80"
             >
-              <Send size={17} />
-              Muallif bilan suhbatlashish
-            </button>
-          </motion.div>
+              KEYINGI QADAM
+            </Reveal>
+            <Reveal
+              delay={0.18}
+              as="h2"
+              className="mx-auto mt-4 max-w-xl text-2xl font-semibold leading-tight tracking-[-0.02em] text-slate-50 sm:text-[2rem]"
+            >
+              Qayerda o&apos;sish imkoni borligini bilmoqchimisiz?
+            </Reveal>
+            <Reveal delay={0.26} className="mt-8 flex justify-center">
+              <CTAButton size="lg" onClick={() => setModalOpen(true)}>
+                Bepul konsultatsiya olish
+              </CTAButton>
+            </Reveal>
+          </Reveal>
         </section>
       </main>
 
-      <footer className="border-t border-white/5 pb-24 pt-6 text-center lg:pb-6">
+      <footer className="border-t border-white/[0.06] pb-24 pt-8 text-center lg:pb-8">
+        <p className="text-[13px] font-semibold tracking-tight text-slate-300">
+          O&apos;N agy.
+        </p>
+        <p className="mx-auto mt-1 max-w-xs text-[11px] text-slate-600">
+          o&apos;sish nuqtasini aniqlaydigan agentlik
+        </p>
         <a
           href={TELEGRAM_URL}
           target="_blank"
           rel="noopener noreferrer"
-          className="font-mono text-[10px] tracking-widest text-slate-600 transition hover:text-teal-400"
+          className="mt-4 inline-block font-mono text-[10px] tracking-widest text-slate-500 transition hover:text-emerald-400"
         >
-          TELEGRAM: T.ME/SP_BUSINESS_AGENCY
+          T.ME/SP_BUSINESS_AGENCY
         </a>
-        <p className="mt-2 font-mono text-[10px] tracking-widest text-slate-700">
-          O&apos;N — O&apos;SISH NUQTASI © 2026
+        <p className="mt-3 font-mono text-[10px] tracking-widest text-slate-700">
+          © 2026
         </p>
       </footer>
 

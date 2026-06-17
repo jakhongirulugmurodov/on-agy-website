@@ -1,17 +1,20 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
-  CheckCircle2,
+  ArrowUpRight,
+  Check,
   ChevronLeft,
   ChevronRight,
   Clock,
-  Send,
   UserCheck,
   X,
 } from "lucide-react";
 import MetricsPanel from "./MetricsPanel";
+import { EASE } from "../lib/motion";
+
+const EASE_CSS = "cubic-bezier(0.22, 1, 0.36, 1)";
 
 export default function StationDetail({
   station,
@@ -21,6 +24,15 @@ export default function StationDetail({
   onCTA,
 }) {
   const Icon = station.icon;
+  const accent = station.accent;
+
+  // Modal AnimatePresence ichida ichki reveal'lar CSS bilan beriladi
+  const [shown, setShown] = useState(false);
+  useEffect(() => {
+    setShown(false);
+    const t = setTimeout(() => setShown(true), 80);
+    return () => clearTimeout(t);
+  }, [station.id]);
 
   useEffect(() => {
     const onKey = (e) => {
@@ -35,63 +47,62 @@ export default function StationDetail({
   return (
     <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto p-3 sm:items-center sm:p-6">
       <motion.div
-        className="fixed inset-0 bg-black/70 backdrop-blur-sm"
+        className="fixed inset-0 bg-black/75 backdrop-blur-md"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
+        transition={{ duration: 0.4, ease: EASE }}
         onClick={onClose}
       />
 
       <motion.div
-        layoutId={`station-${station.id}`}
-        transition={{ type: "spring", stiffness: 240, damping: 28 }}
-        className="relative my-6 w-full max-w-3xl overflow-hidden rounded-3xl border border-white/12 bg-[#0a1114]/95 backdrop-blur-2xl sm:my-0"
-        style={{ boxShadow: `0 0 80px -16px ${station.accent}55` }}
+        initial={{ opacity: 0, scale: 0.96, y: 14 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.97, y: 10 }}
+        transition={{ duration: 0.45, ease: EASE }}
+        className="relative my-6 w-full max-w-3xl overflow-hidden rounded-[1.75rem] border border-white/[0.1] bg-[#0a0f12]/95 backdrop-blur-2xl sm:my-0"
+        style={{ boxShadow: "0 40px 100px -30px rgba(0,0,0,0.9)" }}
       >
         {/* Tepa aksent chizig'i */}
         <div
-          className="h-1 w-full"
+          className="h-px w-full"
           style={{
-            background: `linear-gradient(90deg, transparent, ${station.accent}, transparent)`,
+            background: `linear-gradient(90deg, transparent, ${accent}, transparent)`,
           }}
         />
 
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ delay: 0.12, duration: 0.3 }}
-          className="p-5 sm:p-7"
-        >
+        <div className="p-5 sm:p-7">
           {/* Sarlavha */}
           <div className="flex items-start gap-4">
             <span
               className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border"
               style={{
-                borderColor: `${station.accent}55`,
-                backgroundColor: `${station.accent}1a`,
-                color: station.accent,
+                borderColor: `${accent}44`,
+                backgroundColor: `${accent}14`,
+                color: accent,
               }}
             >
-              <Icon size={24} strokeWidth={1.8} />
+              <Icon size={23} strokeWidth={1.6} />
             </span>
             <div className="min-w-0 flex-1">
               <p
-                className="font-mono text-[10px] font-bold tracking-[0.3em]"
-                style={{ color: station.accent }}
+                className="font-mono text-[10px] font-semibold tracking-[0.3em]"
+                style={{ color: accent }}
               >
                 BEKAT {station.code} / 0{total}
               </p>
-              <h2 className="mt-0.5 text-xl font-bold text-slate-50 sm:text-2xl">
+              <h2 className="mt-1 text-xl font-semibold tracking-[-0.01em] text-slate-50 sm:text-2xl">
                 {station.title}
               </h2>
-              <p className="text-xs text-slate-400 sm:text-sm">{station.tagline}</p>
+              <p className="text-xs text-slate-400 sm:text-[13px]">
+                {station.tagline}
+              </p>
             </div>
             <button
               type="button"
               onClick={onClose}
               aria-label="Yopish"
-              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-slate-400 transition hover:border-white/25 hover:text-white"
+              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-white/[0.08] bg-white/[0.03] text-slate-400 transition hover:border-white/20 hover:text-white"
             >
               <X size={18} />
             </button>
@@ -99,18 +110,18 @@ export default function StationDetail({
 
           {/* Bekat tavsifi */}
           {station.description && (
-            <p className="mt-4 rounded-xl border border-white/8 bg-white/[0.03] p-3.5 text-[13px] leading-relaxed text-slate-300">
+            <p className="mt-4 rounded-xl border border-white/[0.06] bg-white/[0.02] p-3.5 text-[13px] leading-relaxed text-slate-300">
               {station.description}
             </p>
           )}
 
           {/* Holat chiplari */}
           <div className="mt-4 flex flex-wrap gap-2">
-            <span className="flex items-center gap-1.5 rounded-full border border-sky-400/25 bg-sky-400/10 px-3 py-1.5 text-[11px] font-medium text-sky-300">
-              <Clock size={12} />
+            <span className="flex items-center gap-1.5 rounded-full border border-white/[0.08] bg-white/[0.03] px-3 py-1.5 text-[11px] font-medium text-slate-300">
+              <Clock size={12} className="text-emerald-400" />
               {station.time.label}
             </span>
-            <span className="flex items-center gap-1.5 rounded-full border border-teal-400/25 bg-teal-400/10 px-3 py-1.5 text-[11px] font-medium text-teal-300">
+            <span className="flex items-center gap-1.5 rounded-full border border-emerald-400/20 bg-emerald-400/[0.08] px-3 py-1.5 text-[11px] font-medium text-emerald-300">
               <UserCheck size={12} />
               {`Sizdan: ${station.clientInput}`}
             </span>
@@ -119,27 +130,30 @@ export default function StationDetail({
           {/* Asosiy qatlam: qadamlar + ko'rsatkichlar */}
           <div className="mt-6 grid gap-6 md:grid-cols-[1fr_1.1fr]">
             <div>
-              <p className="mb-3 font-mono text-[10px] font-bold tracking-[0.2em] text-slate-500">
+              <p className="mb-3 font-mono text-[10px] font-semibold tracking-[0.2em] text-slate-500">
                 BOSQICH QADAMLARI
               </p>
               <ul className="space-y-2.5">
                 {station.subSteps.map((step, i) => (
-                  <motion.li
+                  <li
                     key={step}
-                    initial={{ opacity: 0, x: -14 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.2 + i * 0.07 }}
-                    className="flex items-start gap-3 rounded-xl border border-white/8 bg-white/[0.03] p-3"
+                    className="flex items-start gap-3 rounded-xl border border-white/[0.06] bg-white/[0.02] p-3"
+                    style={{
+                      opacity: shown ? 1 : 0,
+                      transform: shown ? "translateX(0)" : "translateX(-12px)",
+                      transition: `opacity 0.45s ${EASE_CSS} ${0.1 + i * 0.08}s, transform 0.45s ${EASE_CSS} ${0.1 + i * 0.08}s`,
+                    }}
                   >
-                    <CheckCircle2
-                      size={16}
-                      className="mt-0.5 shrink-0"
-                      style={{ color: station.accent }}
-                    />
+                    <span
+                      className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full"
+                      style={{ backgroundColor: `${accent}1f`, color: accent }}
+                    >
+                      <Check size={11} strokeWidth={3} />
+                    </span>
                     <span className="text-[13px] leading-snug text-slate-200">
                       {step}
                     </span>
-                  </motion.li>
+                  </li>
                 ))}
               </ul>
             </div>
@@ -148,12 +162,12 @@ export default function StationDetail({
           </div>
 
           {/* Pastki navigatsiya */}
-          <div className="mt-6 flex items-center justify-between gap-3 border-t border-white/10 pt-5">
+          <div className="mt-6 flex items-center justify-between gap-3 border-t border-white/[0.08] pt-5">
             <button
               type="button"
               onClick={() => onNavigate(station.id - 1)}
               disabled={station.id === 1}
-              className="flex h-11 items-center gap-1 rounded-xl border border-white/10 bg-white/5 px-3.5 text-xs font-medium text-slate-300 transition hover:border-white/25 disabled:cursor-not-allowed disabled:opacity-30"
+              className="flex h-11 items-center gap-1 rounded-full border border-white/[0.08] bg-white/[0.03] px-3.5 text-xs font-medium text-slate-300 transition hover:border-white/20 disabled:cursor-not-allowed disabled:opacity-30"
             >
               <ChevronLeft size={15} />
               <span className="hidden sm:inline">Oldingi</span>
@@ -162,23 +176,26 @@ export default function StationDetail({
             <button
               type="button"
               onClick={onCTA}
-              className="flex h-11 items-center gap-2 rounded-xl bg-gradient-to-r from-teal-400 to-emerald-500 px-4 text-xs font-bold text-black shadow-[0_0_24px_-6px_rgba(45,212,191,0.7)] transition hover:brightness-110 sm:px-6 sm:text-sm"
+              className="group flex h-11 items-center gap-2 rounded-full bg-emerald-400 px-5 text-xs font-semibold text-emerald-950 transition-all duration-300 hover:bg-emerald-300 sm:px-6 sm:text-[13px]"
             >
-              <Send size={15} />
-              Muallif bilan suhbatlashish
+              Bepul konsultatsiya
+              <ArrowUpRight
+                size={15}
+                className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+              />
             </button>
 
             <button
               type="button"
               onClick={() => onNavigate(station.id + 1)}
               disabled={station.id === total}
-              className="flex h-11 items-center gap-1 rounded-xl border border-white/10 bg-white/5 px-3.5 text-xs font-medium text-slate-300 transition hover:border-white/25 disabled:cursor-not-allowed disabled:opacity-30"
+              className="flex h-11 items-center gap-1 rounded-full border border-white/[0.08] bg-white/[0.03] px-3.5 text-xs font-medium text-slate-300 transition hover:border-white/20 disabled:cursor-not-allowed disabled:opacity-30"
             >
               <span className="hidden sm:inline">Keyingi</span>
               <ChevronRight size={15} />
             </button>
           </div>
-        </motion.div>
+        </div>
       </motion.div>
     </div>
   );

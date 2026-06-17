@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 :root {
-  --background: #05060a;
-  --foreground: #e7edf4;
+  --background: #060709;
+  --foreground: #e8ecf1;
 }
 
 @theme inline {
@@ -21,31 +21,47 @@ body {
   color: var(--foreground);
   font-family: var(--font-geist-sans), system-ui, sans-serif;
   overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
 }
 
-/* Energy flow along the journey path */
+/* Yo'l bo'ylab energiya oqimi (SVG dash) */
 @keyframes dash-flow {
   to {
     stroke-dashoffset: -64;
   }
 }
-
 .path-flow {
-  animation: dash-flow 1.8s linear infinite;
+  animation: dash-flow 2.4s linear infinite;
 }
 
+/* Juda muloyim suzish — neon ping o'rniga */
 @keyframes float-slow {
   0%,
   100% {
     transform: translateY(0px);
   }
   50% {
-    transform: translateY(-8px);
+    transform: translateY(-6px);
   }
 }
-
 .float-slow {
-  animation: float-slow 5s ease-in-out infinite;
+  animation: float-slow 6s ease-in-out infinite;
+}
+
+/* Keyingi bekat uchun sokin "nafas olish" — ping emas */
+@keyframes breathe {
+  0%,
+  100% {
+    opacity: 0.25;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.6;
+    transform: scale(1.12);
+  }
+}
+.breathe {
+  animation: breathe 3.4s ease-in-out infinite;
 }
 
 /* Mijozlar logolari lentasi */
@@ -54,33 +70,40 @@ body {
     transform: translateX(-50%);
   }
 }
-
 .marquee-track {
-  animation: marquee 26s linear infinite;
+  animation: marquee 34s linear infinite;
 }
-
 .marquee:hover .marquee-track {
   animation-play-state: paused;
 }
 
 ::selection {
-  background: rgba(52, 211, 153, 0.35);
+  background: rgba(52, 211, 153, 0.28);
 }
 
 ::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
+  width: 9px;
+  height: 9px;
 }
-
 ::-webkit-scrollbar-track {
-  background: #05060a;
+  background: #060709;
 }
-
 ::-webkit-scrollbar-thumb {
-  background: #1e2735;
+  background: #1a2430;
   border-radius: 8px;
 }
-
 ::-webkit-scrollbar-thumb:hover {
-  background: #2b3850;
+  background: #25323f;
+}
+
+/* Harakatni kamaytirishni so'raganlar uchun barcha takroriy animatsiyalarni o'chiramiz */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
 }

@@ -53,9 +53,9 @@ export default function MiniMapDock({ stations, activeId, visitedMax, onSelect }
         animate={{ opacity: 1, x: 0 }}
         transition={{ delay: 0.8 }}
         aria-label="Yo'l xaritasi bo'ylab navigatsiya"
-        className="fixed right-5 top-1/2 z-40 hidden -translate-y-1/2 flex-col items-center gap-2.5 rounded-2xl border border-white/10 bg-black/55 p-3 backdrop-blur-xl lg:flex"
+        className="fixed right-5 top-1/2 z-40 hidden -translate-y-1/2 flex-col items-center gap-2.5 rounded-2xl border border-white/[0.08] bg-black/50 p-3 backdrop-blur-xl lg:flex"
       >
-        <span className="font-mono text-[10px] font-bold tracking-widest text-rose-400">
+        <span className="font-mono text-[10px] font-semibold tracking-widest text-rose-300/80">
           A
         </span>
         {stations.map((s) => (
@@ -68,10 +68,10 @@ export default function MiniMapDock({ stations, activeId, visitedMax, onSelect }
             vertical
           />
         ))}
-        <span className="font-mono text-[10px] font-bold tracking-widest text-amber-400">
+        <span className="font-mono text-[10px] font-semibold tracking-widest text-amber-200/80">
           B
         </span>
-        <span className="mt-1 rounded-full border border-white/10 bg-white/5 px-2 py-0.5 font-mono text-[9px] text-slate-400">
+        <span className="mt-1 rounded-full border border-white/[0.08] bg-white/[0.04] px-2 py-0.5 font-mono text-[9px] text-slate-400">
           {progress}%
         </span>
       </motion.nav>
@@ -82,9 +82,9 @@ export default function MiniMapDock({ stations, activeId, visitedMax, onSelect }
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.8 }}
         aria-label="Yo'l xaritasi bo'ylab navigatsiya"
-        className="fixed inset-x-3 bottom-3 z-40 flex items-center justify-between gap-1 rounded-2xl border border-white/10 bg-black/70 px-3 py-2.5 backdrop-blur-xl lg:hidden"
+        className="fixed inset-x-3 bottom-3 z-40 flex items-center justify-between gap-1 rounded-2xl border border-white/[0.08] bg-black/70 px-3 py-2.5 backdrop-blur-xl lg:hidden"
       >
-        <span className="font-mono text-[10px] font-bold text-rose-400">A</span>
+        <span className="font-mono text-[10px] font-semibold text-rose-300/80">A</span>
         {stations.map((s) => (
           <DockButton
             key={s.id}
@@ -94,7 +94,7 @@ export default function MiniMapDock({ stations, activeId, visitedMax, onSelect }
             onSelect={onSelect}
           />
         ))}
-        <span className="font-mono text-[10px] font-bold text-amber-400">B</span>
+        <span className="font-mono text-[10px] font-semibold text-amber-200/80">B</span>
       </motion.nav>
     </>
   );

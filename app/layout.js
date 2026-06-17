@@ -12,9 +12,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "O'N — O'sish Nuqtasi | Biznesingizning o'sish nuqtasini topamiz",
+  title: "O'N agy. — Biznesingizning o'sish nuqtasini topamiz",
   description:
-    "O'N SMM agentligi: interaktiv yo'l xaritasi — strategiya, kontent ishlab chiqarish va oylik tahlil orqali biznesingizning o'sish nuqtasini topamiz.",
+    "O'N agy. — o'sish nuqtasini aniqlaydigan agentlik. Interaktiv yo'l xaritasi: strategiya, kontent ishlab chiqarish va oylik tahlil orqali biznesingizning o'sish nuqtasini topamiz.",
 };
 
 export default function RootLayout({ children }) {

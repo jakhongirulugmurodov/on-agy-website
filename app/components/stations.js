@@ -14,7 +14,7 @@ export const STATIONS = [
     description:
       "Siz bilan uchrashib, strategiya tuzish uchun kerak bo'lgan savollarga javob olamiz. Strategiya tuzib olib, tasdiqlaganingizdan keyin keyingi bosqichga o'tamiz.",
     icon: Compass,
-    accent: "#2dd4bf",
+    accent: "#34d399",
     subSteps: [
       "Brifing — sizni va maqsadingizni eshitamiz",
       "Raqobat va auditoriya tahlili",
@@ -42,7 +42,7 @@ export const STATIONS = [
     tagline: "Sahifangiz siz ishlamasangiz ham ishlaydi",
     description: null,
     icon: Clapperboard,
-    accent: "#38bdf8",
+    accent: "#34d399",
     subSteps: [
       "Kontent-plan va ssenariylar",
       "Syomka",
@@ -71,7 +71,7 @@ export const STATIONS = [
     description:
       "Oy oxirida analiz qilamiz va keyingi kontent-planlarni aniqlashtirib, yanada aniqroq ishlashni boshlaymiz.",
     icon: TrendingUp,
-    accent: "#fbbf24",
+    accent: "#34d399",
     subSteps: [
       "Oylik analitika — nima ishladi, nima yo'q",
       "O'sish nuqtasini topish",

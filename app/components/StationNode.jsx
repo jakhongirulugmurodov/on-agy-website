@@ -2,7 +2,8 @@
 
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
-import { CheckCircle2, Clock } from "lucide-react";
+import { Check, Clock } from "lucide-react";
+import { EASE, EASE_SOFT } from "../lib/motion";
 
 export default function StationNode({
   station,
@@ -16,8 +17,10 @@ export default function StationNode({
 }) {
   const [hovered, setHovered] = useState(false);
   const Icon = station.icon;
-  // Pastki qatordagi orollar uchun hover-panel yuqoriga ochiladi
+  const accent = station.accent;
+  // Pastki qatordagi tugunlar uchun hover-panel yuqoriga ochiladi
   const flip = pos.y > 50;
+  const lifted = hovered || isActive;
 
   return (
     <div
@@ -29,102 +32,103 @@ export default function StationNode({
       }}
     >
       <motion.div
-        initial={{ opacity: 0, scale: 0.5, y: 24 }}
+        initial={{ opacity: 0, scale: 0.85, y: 16 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
-        transition={{
-          type: "spring",
-          stiffness: 240,
-          damping: 22,
-          delay: 0.2 + index * 0.15,
-        }}
+        transition={{ duration: 0.7, ease: EASE, delay: 0.6 + index * 0.14 }}
         className="relative"
       >
+        {/* Keyingi bekat — sokin nafas (ping emas) */}
         {isNext && !isActive && (
           <span
-            className="absolute -inset-3 rounded-full animate-ping opacity-25"
-            style={{ backgroundColor: station.accent }}
+            className="breathe pointer-events-none absolute left-1/2 top-7 h-14 w-14 -translate-x-1/2 -translate-y-1/2 rounded-full sm:top-8 sm:h-16 sm:w-16"
+            style={{ boxShadow: `0 0 0 1px ${accent}55` }}
           />
         )}
 
         <motion.button
           type="button"
-          layoutId={`station-${station.id}`}
           onClick={() => onSelect(station.id)}
           onHoverStart={() => setHovered(true)}
           onHoverEnd={() => setHovered(false)}
-          whileHover={{ scale: 1.08, y: -5 }}
-          whileTap={{ scale: 0.95 }}
+          whileHover={{ y: -4 }}
+          whileTap={{ scale: 0.97 }}
+          transition={{ duration: 0.3, ease: EASE_SOFT }}
           aria-label={`${station.code}-bekat: ${station.title}`}
-          className="relative flex w-36 cursor-pointer flex-col items-center gap-1.5 sm:w-44"
+          className="relative flex w-36 cursor-pointer flex-col items-center gap-2 sm:w-44"
         >
           {/* Bosqich markeri */}
           <span
-            className="flex h-14 w-14 items-center justify-center rounded-full border-2 bg-[#0b1518]/90 backdrop-blur-md transition-shadow sm:h-16 sm:w-16"
+            className="flex h-14 w-14 items-center justify-center rounded-full border bg-[#0a1013]/90 backdrop-blur-md transition-all duration-300 sm:h-16 sm:w-16"
             style={{
-              borderColor: `${station.accent}66`,
-              color: station.accent,
-              boxShadow:
-                hovered || isActive
-                  ? `0 0 38px -4px ${station.accent}88`
-                  : `0 0 22px -8px ${station.accent}55`,
+              borderColor: lifted ? `${accent}aa` : `${accent}3a`,
+              color: accent,
+              boxShadow: lifted
+                ? `0 0 28px -8px ${accent}99`
+                : "0 6px 18px -10px rgba(0,0,0,0.8)",
             }}
           >
-            <Icon size={24} strokeWidth={1.8} />
+            <Icon size={23} strokeWidth={1.6} />
           </span>
 
           <span className="font-mono text-[9px] tracking-[0.25em] text-slate-500">
             BEKAT {station.code}
           </span>
-          <span className="text-center text-xs font-semibold leading-tight text-slate-100 sm:text-[13px]">
+          <span
+            className="text-center text-[13px] font-semibold leading-tight transition-colors duration-300"
+            style={{ color: lifted ? "#f1f5f9" : "#cbd5e1" }}
+          >
             {station.title}
           </span>
-          <span className="flex items-center gap-1 rounded-full border border-white/10 bg-black/40 px-2 py-0.5 text-[10px] text-slate-400 backdrop-blur">
+          <span className="flex items-center gap-1 rounded-full border border-white/[0.08] bg-black/30 px-2 py-0.5 text-[10px] text-slate-400 backdrop-blur">
             <Clock size={10} />
             {station.time.label}
           </span>
 
           {isVisited && !isActive && (
-            <span className="absolute -right-1 top-7 rounded-full bg-[#05060a]">
-              <CheckCircle2 size={18} className="text-emerald-400" />
+            <span
+              className="absolute -right-0.5 top-7 flex h-5 w-5 items-center justify-center rounded-full bg-[#060709]"
+              style={{ color: accent }}
+            >
+              <Check size={13} strokeWidth={2.5} />
             </span>
           )}
         </motion.button>
 
-        {/* Hoverda chuqurroq qatlam: qadamlar (faqat desktop) */}
+        {/* Hoverda chuqurroq qatlam — qadamlar (faqat desktop) */}
         <AnimatePresence>
           {isDesktop && hovered && !isActive && (
             <motion.div
-              initial={{ opacity: 0, y: flip ? 10 : -10, scale: 0.94 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: flip ? 6 : -6, scale: 0.96 }}
-              transition={{ type: "spring", stiffness: 380, damping: 28 }}
-              className={`absolute left-1/2 z-30 w-64 -translate-x-1/2 rounded-2xl border border-white/10 bg-[#0a1114]/95 p-4 backdrop-blur-xl ${
+              initial={{ opacity: 0, y: flip ? 8 : -8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: flip ? 5 : -5 }}
+              transition={{ duration: 0.28, ease: EASE }}
+              className={`absolute left-1/2 z-30 w-64 -translate-x-1/2 rounded-2xl border border-white/[0.08] bg-[#0a0f12]/95 p-4 backdrop-blur-xl ${
                 flip ? "bottom-full mb-3" : "top-full mt-3"
               }`}
-              style={{ boxShadow: `0 0 40px -8px ${station.accent}40` }}
+              style={{ boxShadow: "0 20px 50px -20px rgba(0,0,0,0.9)" }}
             >
               <p
-                className="mb-2 font-mono text-[10px] tracking-[0.2em]"
-                style={{ color: station.accent }}
+                className="mb-2.5 font-mono text-[10px] tracking-[0.2em]"
+                style={{ color: accent }}
               >
                 BU BEKATDA
               </p>
-              <ul className="space-y-1.5">
+              <ul className="space-y-2">
                 {station.subSteps.map((step) => (
                   <li
                     key={step}
-                    className="flex items-start gap-2 text-[11px] leading-snug text-slate-300"
+                    className="flex items-start gap-2.5 text-[11px] leading-snug text-slate-300"
                   >
                     <span
                       className="mt-1.5 h-1 w-1 shrink-0 rounded-full"
-                      style={{ backgroundColor: station.accent }}
+                      style={{ backgroundColor: accent }}
                     />
                     {step}
                   </li>
                 ))}
               </ul>
-              <p className="mt-3 border-t border-white/10 pt-2 text-[10px] text-slate-500">
-                Bosing — vaqt, byudjet va ishonch ko&apos;rsatkichlari ochiladi
+              <p className="mt-3 border-t border-white/[0.08] pt-2.5 text-[10px] text-slate-500">
+                Bosing — vaqt, byudjet va ishonch ko&apos;rsatkichlari
               </p>
             </motion.div>
           )}
