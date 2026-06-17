@@ -8,6 +8,7 @@ import StationDetail from "./StationDetail";
 import CTAModal from "./CTAModal";
 import ClientsSection from "./ClientsSection";
 import PortfolioSection from "./PortfolioSection";
+import AvailabilitySection from "./AvailabilitySection";
 import StageCard from "./StageCard";
 import Reveal from "./Reveal";
 
@@ -164,6 +165,7 @@ export default function SMMRoadmap() {
 
         <ClientsSection />
         <PortfolioSection />
+        <AvailabilitySection />
 
         {/* Yakuniy chaqiruv */}
         <section className="mx-auto max-w-5xl px-5 pb-24">
