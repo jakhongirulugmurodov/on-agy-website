@@ -4,9 +4,9 @@ import { useEffect, useRef, useState } from "react";
 
 const EASE_CSS = "cubic-bezier(0.22, 1, 0.36, 1)";
 
-// Scroll-reveal: IntersectionObserver + CSS transition.
-// Framer-motion'ning whileInView'i bu setupda ishonchsiz, shuning uchun
-// barcha scroll-reveal'lar shu komponent orqali beriladi.
+// Scroll-reveal: IntersectionObserver + CSS keyframe animatsiya.
+// CSS transition'lar bu setupda (yuklanishda) muzlab qoladi, shuning uchun
+// keyframe animatsiya ishlatamiz — u ishonchli o'ynaydi.
 export default function Reveal({
   children,
   delay = 0,
@@ -38,24 +38,21 @@ export default function Reveal({
           }
         });
       },
-      { threshold: 0.15, rootMargin: "0px 0px -10% 0px" }
+      { threshold: 0.12, rootMargin: "0px 0px -8% 0px" }
     );
     io.observe(el);
     return () => io.disconnect();
   }, [once]);
 
+  const animStyle = shown
+    ? {
+        animation: `reveal-rise ${duration}s ${EASE_CSS} ${delay}s both`,
+        "--reveal-y": `${y}px`,
+      }
+    : { opacity: 0 };
+
   return (
-    <Tag
-      ref={ref}
-      className={className}
-      style={{
-        ...style,
-        opacity: shown ? 1 : 0,
-        transform: shown ? "translateY(0)" : `translateY(${y}px)`,
-        transition: `opacity ${duration}s ${EASE_CSS} ${delay}s, transform ${duration}s ${EASE_CSS} ${delay}s`,
-        willChange: "opacity, transform",
-      }}
-    >
+    <Tag ref={ref} className={className} style={{ ...style, ...animStyle }}>
       {children}
     </Tag>
   );
