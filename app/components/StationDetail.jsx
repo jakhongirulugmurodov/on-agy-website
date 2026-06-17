@@ -1,6 +1,5 @@
 "use client";
 
-import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import {
   ArrowUpRight,
@@ -12,7 +11,6 @@ import {
   X,
 } from "lucide-react";
 import MetricsPanel from "./MetricsPanel";
-import { EASE } from "../lib/motion";
 
 const EASE_CSS = "cubic-bezier(0.22, 1, 0.36, 1)";
 
@@ -46,22 +44,19 @@ export default function StationDetail({
 
   return (
     <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto p-3 sm:items-center sm:p-6">
-      <motion.div
+      <div
         className="fixed inset-0 bg-black/75 backdrop-blur-md"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        transition={{ duration: 0.4, ease: EASE }}
+        style={{ animation: `fade-in 0.3s ${EASE_CSS} both` }}
         onClick={onClose}
       />
 
-      <motion.div
-        initial={{ opacity: 0, scale: 0.96, y: 14 }}
-        animate={{ opacity: 1, scale: 1, y: 0 }}
-        exit={{ opacity: 0, scale: 0.97, y: 10 }}
-        transition={{ duration: 0.45, ease: EASE }}
+      <div
         className="relative my-6 w-full max-w-3xl overflow-hidden rounded-[1.75rem] border border-white/[0.1] bg-[#0a0f12]/95 backdrop-blur-2xl sm:my-0"
-        style={{ boxShadow: "0 40px 100px -30px rgba(0,0,0,0.9)" }}
+        style={{
+          boxShadow: "0 40px 100px -30px rgba(0,0,0,0.9)",
+          animation: `reveal-rise 0.4s ${EASE_CSS} both`,
+          "--reveal-y": "14px",
+        }}
       >
         {/* Tepa aksent chizig'i */}
         <div
@@ -196,7 +191,7 @@ export default function StationDetail({
             </button>
           </div>
         </div>
-      </motion.div>
+      </div>
     </div>
   );
 }

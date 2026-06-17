@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import {
   ArrowRight,
@@ -18,6 +18,8 @@ import {
 } from "lucide-react";
 import { TELEGRAM_URL } from "./stations";
 import { EASE } from "../lib/motion";
+
+const EASE_CSS = "cubic-bezier(0.22, 1, 0.36, 1)";
 
 const INDUSTRIES = [
   "Savdo / Retail",
@@ -135,26 +137,21 @@ export default function CTAModal({ open, onClose }) {
     setSubmitted(true);
   };
 
-  return (
-    <AnimatePresence>
-      {open && (
-        <div className="fixed inset-0 z-[60] flex items-center justify-center overflow-y-auto p-4">
-          <motion.div
-            className="fixed inset-0 bg-black/75 backdrop-blur-sm"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={onClose}
-          />
+  if (!open) return null;
 
-          <motion.div
-            initial={{ opacity: 0, scale: 0.96, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.97, y: 12 }}
-            transition={{ duration: 0.45, ease: EASE }}
-            className="relative my-6 w-full max-w-md overflow-hidden rounded-[1.5rem] border border-white/[0.1] bg-[#0a0f12] shadow-[0_40px_100px_-30px_rgba(0,0,0,0.9)]"
-          >
-            <div className="h-px w-full bg-gradient-to-r from-transparent via-emerald-400 to-transparent" />
+  return (
+    <div className="fixed inset-0 z-[60] flex items-center justify-center overflow-y-auto p-4">
+      <div
+        className="fixed inset-0 bg-black/75 backdrop-blur-sm"
+        style={{ animation: `fade-in 0.3s ${EASE_CSS} both` }}
+        onClick={onClose}
+      />
+
+      <div
+        className="relative my-6 w-full max-w-md overflow-hidden rounded-[1.5rem] border border-white/[0.1] bg-[#0a0f12] shadow-[0_40px_100px_-30px_rgba(0,0,0,0.9)]"
+        style={{ animation: `reveal-rise 0.4s ${EASE_CSS} both`, "--reveal-y": "16px" }}
+      >
+        <div className="h-px w-full bg-gradient-to-r from-transparent via-emerald-400 to-transparent" />
 
             <div className="p-6">
               {submitted ? (
@@ -230,15 +227,16 @@ export default function CTAModal({ open, onClose }) {
                   </div>
 
                   <div className="mt-5 min-h-64">
-                    <AnimatePresence mode="wait">
-                      <motion.div
-                        key={step}
-                        initial={{ opacity: 0, x: 28 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        exit={{ opacity: 0, x: -28 }}
-                        transition={{ duration: 0.3, ease: EASE }}
-                        className="space-y-4"
-                      >
+                    {/* key={step} → har qadamda qayta mount, CSS keyframe qayta o'ynaydi
+                        (framer AnimatePresence mode="wait" reactCompiler bilan muzlaydi) */}
+                    <div
+                      key={step}
+                      className="space-y-4"
+                      style={{
+                        animation: `reveal-rise 0.3s ${EASE_CSS} both`,
+                        "--reveal-y": "10px",
+                      }}
+                    >
                         {step === 0 && (
                           <>
                             <Field
@@ -340,8 +338,7 @@ export default function CTAModal({ open, onClose }) {
                             </div>
                           </>
                         )}
-                      </motion.div>
-                    </AnimatePresence>
+                    </div>
                   </div>
 
                   {/* Navigatsiya */}
@@ -383,9 +380,7 @@ export default function CTAModal({ open, onClose }) {
                 </>
               )}
             </div>
-          </motion.div>
-        </div>
-      )}
-    </AnimatePresence>
+      </div>
+    </div>
   );
 }

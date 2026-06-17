@@ -1,6 +1,6 @@
 "use client";
 
-import { AnimatePresence, motion, useScroll, useSpring } from "framer-motion";
+import { motion, useScroll, useSpring } from "framer-motion";
 import { useCallback, useEffect, useState } from "react";
 import { ArrowUpRight } from "lucide-react";
 import { STATIONS, TELEGRAM_URL } from "./stations";
@@ -204,21 +204,19 @@ export default function SMMRoadmap() {
         </p>
       </footer>
 
-      <AnimatePresence>
-        {activeStation && (
-          <StationDetail
-            key={activeStation.id}
-            station={activeStation}
-            total={STATIONS.length}
-            onClose={closeStation}
-            onNavigate={selectStation}
-            onCTA={() => {
-              setActiveId(null);
-              setModalOpen(true);
-            }}
-          />
-        )}
-      </AnimatePresence>
+      {activeStation && (
+        <StationDetail
+          key={activeStation.id}
+          station={activeStation}
+          total={STATIONS.length}
+          onClose={closeStation}
+          onNavigate={selectStation}
+          onCTA={() => {
+            setActiveId(null);
+            setModalOpen(true);
+          }}
+        />
+      )}
 
       <CTAModal open={modalOpen} onClose={() => setModalOpen(false)} />
     </div>
